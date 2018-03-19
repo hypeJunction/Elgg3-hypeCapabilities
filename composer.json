@@ -1,0 +1,28 @@
+{
+	"name": "hypejunction/hypecapabilities",
+	"type": "elgg-plugin",
+	"description": "Roles and capabilities API",
+	"homepage": "http://hypejunction.com",
+	"keywords": [
+		"elgg", "plugin", "capabilities", "roles"
+	],
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Ismayil Khayredinov",
+			"email": "info@hypejunction.com"
+		}
+	],
+	"extra": {
+		"installer-name": "hypeCapabilities"
+	},
+	"require": {
+		"php": ">=7.0",
+		"composer/installers": "~1.0"
+	},
+	"autoload": {
+		"psr-0": {
+			"": "classes/"
+		}
+	}
+}

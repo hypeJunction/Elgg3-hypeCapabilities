@@ -17,9 +17,9 @@ class PrepareMenus {
 
 		$sections = $hook->getValue();
 
-		list($name, $type) = explode(':', $hook->getType());
+		$hook_type = explode(':', $hook->getType());
 
-		if ($name !== 'menu') {
+		if ($hook_type[0] !== 'menu') {
 			return null;
 		}
 

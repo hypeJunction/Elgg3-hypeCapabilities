@@ -26,11 +26,11 @@ class Context implements ContextInterface {
 	/**
 	 * Constructor
 	 *
-	 * @param ElggData|null $target Target
+	 * @param ElggEntity|null $target Target
 	 * @param ElggUser|null $actor  Actor
 	 * @param array         $params Additional params
 	 */
-	public function __construct(ElggData $target = null, ElggUser $actor = null, array $params = []) {
+	public function __construct(ElggEntity $target = null, ElggUser $actor = null, array $params = []) {
 		$this->target = $target;
 		if (!isset($actor) && elgg_is_logged_in()) {
 			$actor = elgg_get_logged_in_user_entity();
@@ -41,7 +41,7 @@ class Context implements ContextInterface {
 
 	/**
 	 * Get target of the capability check
-	 * @return ElggData|null
+	 * @return ElggEntity|null
 	 */
 	public function getTarget() {
 		return $this->target;
@@ -52,7 +52,7 @@ class Context implements ContextInterface {
 	 * @return ElggUser
 	 */
 	public function getActor() {
-		return $this->getActor();
+		return $this->actor;
 	}
 
 	/**

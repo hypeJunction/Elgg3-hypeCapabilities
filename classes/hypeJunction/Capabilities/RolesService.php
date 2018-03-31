@@ -2,6 +2,7 @@
 
 namespace hypeJunction\Capabilities;
 
+use DatabaseException;
 use Elgg\Database\Select;
 use ElggEntity;
 use ElggUser;
@@ -48,19 +49,70 @@ class RolesService {
 	}
 
 	/**
+	 * Get role by its name
+	 *
+	 * @param string $name Role name
+	 *
+	 * @return Role|null
+	 */
+	public function getRoleByName($name) {
+		return elgg_extract($name, $this->roles);
+	}
+
+	/**
+	 * Get all roles
+	 *
+	 * @param bool $selectable Only show selectable roles
+	 *
+	 * @return Role[]
+	 */
+	public function all($selectable = true) {
+		$roles = $this->roles;
+		if (!$selectable) {
+			return $roles;
+		}
+
+		return array_filter($roles, function (Role $e) {
+			return $e->isSelectable();
+		});
+	}
+
+	/**
 	 * Register a new role
 	 *
-	 * @param string   $role    Role name
-	 * @param string[] $extends Roles extended
+	 * @param string   $role     Role name
+	 * @param string[] $extends  Roles extended
+	 * @param int      $priority Role priority
+	 *                           Roles with higher priority take precedence during resolution
 	 *
 	 * @return void
 	 */
-	public function register($role, array $extends = []) {
+	public function register($role, array $extends = [], $priority = null) {
 		if (in_array($role, $this->defaults)) {
 			return;
 		}
 
-		$this->roles[$role] = new Role($role, $extends);
+		if (!isset($priority)) {
+			if (!empty($extends)) {
+				$extended_priorities = array_map(function ($e) {
+					return $this->$e->getPriority();
+				}, $extends);
+
+				$priority = max($extended_priorities) + 100;
+			} else {
+				$priority = 500;
+			}
+		}
+
+		if (isset($this->roles[$role])) {
+			$role = $this->roles[$role];
+			foreach ($extends as $extend) {
+				$role->addExtend($extend);
+			}
+			$role->setPriority($priority);
+		} else {
+			$this->roles[$role] = new Role($role, $extends, $priority);
+		}
 	}
 
 	/**
@@ -88,7 +140,8 @@ class RolesService {
 	 * @return void
 	 */
 	public function assign($role, ElggUser $user, ElggEntity $target = null) {
-		if (in_array($role, $this->defaults)) {
+		$role = $this->getRoleByName($role);
+		if (!$role || !$role->isSelectable()) {
 			return;
 		}
 
@@ -96,7 +149,7 @@ class RolesService {
 			$target = elgg_get_site_entity();
 		}
 
-		add_entity_relationship($user->guid, "has_role:{$role}", $target->guid);
+		add_entity_relationship($user->guid, "has_role:{$role->getRole()}", $target->guid);
 	}
 
 	/**
@@ -109,10 +162,6 @@ class RolesService {
 	 * @return void
 	 */
 	public function unassign($role, ElggUser $user, ElggEntity $target = null) {
-		if (in_array($role, $this->defaults)) {
-			return;
-		}
-
 		if (!isset($target)) {
 			$target = elgg_get_site_entity();
 		}
@@ -128,6 +177,7 @@ class RolesService {
 	 * @param ElggEntity $target Target entity (e.g. assign group admin role to a specific group)
 	 *
 	 * @return Role|null
+	 * @throws DatabaseException
 	 */
 	public function hasRole($role, ElggUser $user = null, ElggEntity $target = null) {
 		$roles = $this->getRoles($user, $target);
@@ -146,6 +196,7 @@ class RolesService {
 	 * @param ElggEntity|null $target Target
 	 *
 	 * @return Role[]
+	 * @throws DatabaseException
 	 */
 	public function getRoles(ElggUser $user = null, ElggEntity $target = null) {
 		if (!isset($user)) {
@@ -162,12 +213,6 @@ class RolesService {
 			$roles[] = $this->guest;
 
 			return $roles;
-		}
-
-		if ($user->isAdmin()) {
-			$roles[] = $this->admin;
-		} else {
-			$roles[] = $this->user;
 		}
 
 		$qb = Select::fromTable('entity_relationships');
@@ -188,6 +233,56 @@ class RolesService {
 			}
 		}
 
+		if (empty($roles) && $target instanceof \ElggSite) {
+			if ($user->isAdmin()) {
+				$roles[] = $this->admin;
+			} else {
+				$roles[] = $this->user;
+			}
+		}
+
 		return $roles;
 	}
+
+	/**
+	 * Get user roles for permissions check
+	 *
+	 * @param ElggUser|null $user   User
+	 * @param ElggEntity    $target Target
+	 *
+	 * @return RoleInterface[]
+	 * @throws DatabaseException
+	 */
+	public function getRolesForPermissionsCheck(ElggUser $user = null, $target = null) {
+
+		if (!isset($user) && elgg_is_logged_in()) {
+			$user = elgg_get_logged_in_user_entity();
+		}
+
+		if ($target instanceof ElggEntity) {
+			// Get container roles
+			$container_roles = $this->getRoles($user, $target);
+		} else {
+			$container_roles = [];
+		}
+
+		// Get site roles
+		$site_roles = $this->getRoles($user);
+
+		$roles = array_merge($container_roles, $site_roles);
+
+		uasort($roles, function (RoleInterface $r1, RoleInterface $r2) {
+			$p1 = $r1->getPriority();
+			$p2 = $r2->getPriority();
+
+			if ($p1 === $p2) {
+				return 0;
+			}
+
+			return $p1 < $p2 ? -1 : 1;
+		});
+
+		return $roles;
+	}
+
 }

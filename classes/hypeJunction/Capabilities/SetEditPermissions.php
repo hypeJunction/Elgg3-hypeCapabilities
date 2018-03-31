@@ -12,6 +12,7 @@ class SetEditPermissions {
 	 * @param Hook $hook Hook
 	 *
 	 * @return bool|null
+	 * @throws \DatabaseException
 	 */
 	public function __invoke(Hook $hook) {
 
@@ -25,27 +26,24 @@ class SetEditPermissions {
 		$svc = elgg()->roles;
 		/* @var $svc \hypeJunction\Capabilities\RolesService */
 
-		$roles = [];
-
 		$container = $entity->getContainerEntity();
-		if ($container) {
-			$roles = $svc->getRoles($user, $container);
-		}
 
-		$roles = array_merge($roles, $svc->getRoles($user));
-		/* @var $roles \hypeJunction\Capabilities\Role[] */
+		$roles = $svc->getRolesForPermissionsCheck($user, $container);
 
 		foreach ($roles as $role) {
 			$rule = $role->getEntityRule(Role::UPDATE, $entity, $user, $hook->getParams());
-			if (isset($rule)) {
-				return $rule;
+			if ($rule) {
+				return $rule->grants($hook->getValue());
 			}
 		}
 
 		foreach ($roles as $role) {
 			$rule = $role->getEntityRule(Role::ADMINISTER, $entity, $user, $hook->getParams());
-			if ($rule === true) {
-				return true;
+			if ($rule) {
+				$grant = $rule->grants($hook->getValue());
+				if ($grant === true) {
+					return true;
+				}
 			}
 		}
 	}

@@ -2,6 +2,7 @@
 
 namespace hypeJunction\Capabilities;
 
+use DatabaseException;
 use Elgg\Hook;
 
 class SetCreatePermissions {
@@ -12,6 +13,7 @@ class SetCreatePermissions {
 	 * @param Hook $hook Hook
 	 *
 	 * @return bool|null
+	 * @throws DatabaseException
 	 */
 	public function __invoke(Hook $hook) {
 
@@ -25,14 +27,15 @@ class SetCreatePermissions {
 		$svc = elgg()->roles;
 		/* @var $svc \hypeJunction\Capabilities\RolesService */
 
-		$roles = $svc->getRoles($user, $container);
-		$roles = array_merge($roles, $svc->getRoles($user));
-		/* @var $roles \hypeJunction\Capabilities\Role[] */
+		$roles = $svc->getRolesForPermissionsCheck($user, $container);
 
 		foreach ($roles as $role) {
-			$rule = $role->getEntityRule(Role::CREATE, $container, $user, $hook->getParams());
-			if (isset($rule)) {
-				return $rule;
+			$params = $hook->getParams();
+			$params['type'] = $hook->getType();
+
+			$rule = $role->getEntityRule(Role::CREATE, $container, $user, $params);
+			if ($rule) {
+				return $rule->grants($hook->getValue());
 			}
 		}
 	}

@@ -18,6 +18,9 @@ final class Role implements RoleInterface {
 	const ALLOW = true;
 	const DENY = false;
 
+	const OVERRIDE = 'override';
+	const STACK = 'stack';
+
 	/**
 	 * @var string
 	 */
@@ -34,14 +37,22 @@ final class Role implements RoleInterface {
 	protected $capabilities = [];
 
 	/**
+	 * @var int
+	 */
+	protected $priority;
+
+	/**
 	 * Constructor
 	 *
-	 * @param string   $role    Role name
-	 * @param string[] $extends Extension role names
+	 * @param string   $role     Role name
+	 * @param string[] $extends  Extension role names
+	 * @param int      $priority Role priority
+	 *                           Roles with higher priority will take precedence during grant resolution
 	 */
-	public function __construct($role, array $extends = []) {
+	public function __construct($role, array $extends = [], $priority = 500) {
 		$this->role = $role;
 		$this->extends = $extends;
+		$this->priority = $priority;
 	}
 
 	/**
@@ -49,6 +60,34 @@ final class Role implements RoleInterface {
 	 */
 	public function getRole() {
 		return $this->role;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getLabel() {
+		return elgg_echo("roles:role:$this->role");
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function isSelectable() {
+		return !in_array($this->role, ['user', 'admin', 'guest']);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getPriority() {
+		return $this->priority;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function setPriority($priority = 500) {
+		$this->priority = $priority;
 	}
 
 	/**
@@ -68,50 +107,50 @@ final class Role implements RoleInterface {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function onCreate($type, $subtype, $rule) {
-		$this->capabilities[self::CREATE][$type][$subtype] = $rule;
+	public function onCreate($type, $subtype, $rule, $condition = self::STACK) {
+		$this->capabilities[self::CREATE][$type][$subtype] = new Rule($rule, $condition);
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function onRead($type, $subtype, $rule) {
-		$this->capabilities[self::READ][$type][$subtype] = $rule;
+	public function onRead($type, $subtype, $rule, $condition = self::STACK) {
+		$this->capabilities[self::READ][$type][$subtype] = new Rule($rule, $condition);
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function onUpdate($type, $subtype, $rule) {
-		$this->capabilities[self::UPDATE][$type][$subtype] = $rule;
+	public function onUpdate($type, $subtype, $rule, $condition = self::STACK) {
+		$this->capabilities[self::UPDATE][$type][$subtype] = new Rule($rule, $condition);
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function onDelete($type, $subtype, $rule) {
-		$this->capabilities[self::DELETE][$type][$subtype] = $rule;
+	public function onDelete($type, $subtype, $rule, $condition = self::STACK) {
+		$this->capabilities[self::DELETE][$type][$subtype] = new Rule($rule, $condition);
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function onAdminister($type, $subtype, $rule) {
-		$this->capabilities[self::ADMINISTER][$type][$subtype] = $rule;
+	public function onAdminister($type, $subtype, $rule, $condition = self::STACK) {
+		$this->capabilities[self::ADMINISTER][$type][$subtype] = new Rule($rule, $condition);
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function onAction($action, $rule) {
-		$this->capabilities[self::ROUTE]['route']["action:$action"] = $rule;
+	public function onAction($action, $rule, $condition = self::STACK) {
+		$this->capabilities[self::ROUTE]['route']["action:$action"] = new Rule($rule, $condition);
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function onRouteAccess($route, $rule) {
-		$this->capabilities[self::ROUTE]['route'][$route] = $rule;
+	public function onRouteAccess($route, $rule, $condition = self::STACK) {
+		$this->capabilities[self::ROUTE]['route'][$route] = new Rule($rule, $condition);
 	}
 
 	/**
@@ -148,40 +187,42 @@ final class Role implements RoleInterface {
 	}
 
 	/**
-	 * Resolve entity capability
-	 *
-	 * @param string     $capability 'create', 'read', 'update', 'delete'
-	 * @param ElggEntity $target     Entity
-	 * @param ElggUser   $actor      User
-	 * @param array      $params     Context parameters
-	 *
-	 * @return bool|null
+	 * {@inheritdoc}
 	 */
-	public function getEntityRule($capability, ElggEntity $target, ElggUser $actor, array $params = []) {
-		$capabilities = $this->getCapabilities();
-		if (isset($capabilities[$capability][$target->type][$target->subtype])) {
-			$rule = $capabilities[$capability][$target->type][$target->subtype];
-			if (is_bool($rule)) {
-				return $rule;
-			} else if (is_callable($rule)) {
-				$context = new Context($target, $actor, $params);
+	public function getEntityRule($capability, ElggEntity $target = null, ElggUser $actor = null, array $params = []) {
 
-				return call_user_func($rule, $context);
-			}
+		if (!$target) {
+			return null;
+		}
+
+		if (!isset($actor) && elgg_is_logged_in()) {
+			$actor = elgg_get_logged_in_user_entity();
+		}
+
+		$capabilities = $this->getCapabilities();
+
+		if ($capability == Role::CREATE) {
+			$type = elgg_extract('type', $params);
+			$subtype = elgg_extract('subtype', $params);
+		} else {
+			$type = $target->type;
+			$subtype = $target->subtype;
+		}
+
+		if (isset($capabilities[$capability][$type][$subtype])) {
+			$rule = $capabilities[$capability][$type][$subtype];
+			/* @var $rule RuleInterface */
+
+			$rule->setContext(new Context($target, $actor, $params));
+
+			return $rule;
 		}
 
 		return null;
 	}
 
 	/**
-	 * Resolve entity capability
-	 *
-	 * @param string     $route  Route name
-	 * @param ElggEntity $target Target entity (page owner)
-	 * @param ElggUser   $user   Actor
-	 * @param array      $params Context parameters
-	 *
-	 * @return bool|null
+	 * {@inheritdoc}
 	 */
 	public function getRouteRule($route, ElggEntity $target = null, ElggUser $user = null, array $params = []) {
 
@@ -189,13 +230,11 @@ final class Role implements RoleInterface {
 
 		if (isset($capabilities[self::ROUTE]['route'][$route])) {
 			$rule = $capabilities[self::ROUTE]['route'][$route];
-			if (is_bool($rule)) {
-				return $rule;
-			} else if (is_callable($rule)) {
-				$context = new Context($target, $user, $params);
+			/* @var $rule RuleInterface */
 
-				return call_user_func($rule, $context);
-			}
+			$rule->setContext(new Context($target, $user, $params));
+
+			return $rule;
 		}
 
 		return null;

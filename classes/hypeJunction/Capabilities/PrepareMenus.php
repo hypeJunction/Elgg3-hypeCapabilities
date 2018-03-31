@@ -51,18 +51,15 @@ class PrepareMenus {
 					$svc = elgg()->roles;
 					/* @var $svc \hypeJunction\Capabilities\RolesService */
 
-					$roles = [];
-					if ($container) {
-						$roles = $svc->getRoles($user, $container);
-					}
-
-					$roles = array_merge($roles, $svc->getRoles($user));
-					/* @var $roles \hypeJunction\Capabilities\Role[] */
+					$roles = $svc->getRolesForPermissionsCheck($user, $container);
 
 					foreach ($roles as $role) {
 						$rule = $role->getRouteRule($route, $container, $user, $params);
-						if ($rule === false) {
-							unset($sections[$section][$key]);
+						if ($rule) {
+							$grant = $rule->grants(true);
+							if ($grant === false) {
+								unset($sections[$section][$key]);
+							}
 						}
 					}
 				} catch (\Exception $ex) {

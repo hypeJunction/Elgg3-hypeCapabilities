@@ -2,9 +2,9 @@
 
 namespace hypeJunction\Capabilities;
 
+use DatabaseException;
 use Elgg\EntityPermissionsException;
 use Elgg\Request;
-use RouteAccessCapability;
 
 class RouteAccessMiddleware {
 
@@ -15,6 +15,7 @@ class RouteAccessMiddleware {
 	 *
 	 * @return void
 	 * @throws EntityPermissionsException
+	 * @throws DatabaseException
 	 */
 	public function __invoke(Request $request) {
 
@@ -26,18 +27,15 @@ class RouteAccessMiddleware {
 		$svc = elgg()->roles;
 		/* @var $svc \hypeJunction\Capabilities\RolesService */
 
-		$roles = [];
-		if ($container) {
-			$roles = $svc->getRoles($user, $container);
-		}
-
-		$roles = array_merge($roles, $svc->getRoles($user));
-		/* @var $roles \hypeJunction\Capabilities\Role[] */
+		$roles = $svc->getRolesForPermissionsCheck($user, $container);
 
 		foreach ($roles as $role) {
 			$rule = $role->getRouteRule($request->getRoute(), $container, $user, $params);
-			if ($rule === false) {
-				throw new EntityPermissionsException();
+			if ($rule) {
+				$grant = $rule->grants(true);
+				if ($grant === false) {
+					throw new EntityPermissionsException();
+				}
 			}
 		}
 	}

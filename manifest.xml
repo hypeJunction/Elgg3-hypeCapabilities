@@ -4,7 +4,7 @@
     <name>hypeCapabilities</name>
     <id>hypeCapabilities</id>
     <description>Capabilities and roles API</description>
-   <version type="dist">1.0.0</version>
+   <version type="dist">1.1.0</version>
 
     <category>capabilities</category>
     <category>roles</category>

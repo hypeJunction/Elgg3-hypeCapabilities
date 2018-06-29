@@ -25,7 +25,7 @@ class RouteAccessMiddleware {
 		$user = $request->elgg()->session->getLoggedInUser() ? : null;
 
 		$svc = elgg()->roles;
-		/* @var $svc \hypeJunction\Capabilities\RolesService */
+		/* @var $svc \hypeJunction\Capabilities\Roles */
 
 		$roles = $svc->getRolesForPermissionsCheck($user, $container);
 

@@ -189,7 +189,7 @@ final class Role implements RoleInterface {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getEntityRule($capability, ElggEntity $target = null, ElggUser $actor = null, array $params = []) {
+	public function getEntityRule($action, ElggEntity $target = null, ElggUser $actor = null, array $params = []) {
 
 		if (!$target) {
 			return null;
@@ -201,7 +201,7 @@ final class Role implements RoleInterface {
 
 		$capabilities = $this->getCapabilities();
 
-		if ($capability == Role::CREATE) {
+		if ($action == Role::CREATE) {
 			$type = elgg_extract('type', $params);
 			$subtype = elgg_extract('subtype', $params);
 		} else {
@@ -209,8 +209,8 @@ final class Role implements RoleInterface {
 			$subtype = $target->subtype;
 		}
 
-		if (isset($capabilities[$capability][$type][$subtype])) {
-			$rule = $capabilities[$capability][$type][$subtype];
+		if (isset($capabilities[$action][$type][$subtype])) {
+			$rule = $capabilities[$action][$type][$subtype];
 			/* @var $rule RuleInterface */
 
 			$rule->setContext(new Context($target, $actor, $params));
@@ -230,6 +230,32 @@ final class Role implements RoleInterface {
 
 		if (isset($capabilities[self::ROUTE]['route'][$route])) {
 			$rule = $capabilities[self::ROUTE]['route'][$route];
+			/* @var $rule RuleInterface */
+
+			$rule->setContext(new Context($target, $user, $params));
+
+			return $rule;
+		}
+
+		return null;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function on($action, $component, $rule, $condition = self::STACK) {
+		$this->capabilities[$action]['custom'][$component] = new Rule($rule, $condition);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getCustomRule($action, $component, ElggEntity $target = null, ElggUser $user = null, array $params = []) {
+
+		$capabilities = $this->getCapabilities();
+
+		if (isset($capabilities[$action]['custom'][$component])) {
+			$rule = $capabilities[$action]['custom'][$component];
 			/* @var $rule RuleInterface */
 
 			$rule->setContext(new Context($target, $user, $params));

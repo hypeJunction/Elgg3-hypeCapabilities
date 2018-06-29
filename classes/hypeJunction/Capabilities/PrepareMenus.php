@@ -49,7 +49,7 @@ class PrepareMenus {
 					$container = $this->resolveTarget($route, $params) ? : null;
 
 					$svc = elgg()->roles;
-					/* @var $svc \hypeJunction\Capabilities\RolesService */
+					/* @var $svc \hypeJunction\Capabilities\Roles */
 
 					$roles = $svc->getRolesForPermissionsCheck($user, $container);
 

@@ -149,14 +149,14 @@ interface RoleInterface {
 	/**
 	 * Resolve entity capability
 	 *
-	 * @param string     $capability 'create', 'read', 'update', 'delete'
-	 * @param ElggEntity $target     Entity
-	 * @param ElggUser   $actor      User
-	 * @param array      $params     Context parameters
+	 * @param string     $action 'create', 'read', 'update', 'delete'
+	 * @param ElggEntity $target Entity
+	 * @param ElggUser   $actor  User
+	 * @param array      $params Context parameters
 	 *
 	 * @return RuleInterface|null
 	 */
-	public function getEntityRule($capability, ElggEntity $target = null, ElggUser $actor = null, array $params = []);
+	public function getEntityRule($action, ElggEntity $target = null, ElggUser $actor = null, array $params = []);
 
 	/**
 	 * Resolve entity capability
@@ -170,4 +170,28 @@ interface RoleInterface {
 	 */
 	public function getRouteRule($route, ElggEntity $target = null, ElggUser $user = null, array $params = []);
 
+	/**
+	 * Register custom capability rule
+	 *
+	 * @param string          $action    Action/capability name
+	 * @param string          $component Component/module name
+	 * @param callable|bool   $rule      Rule (true = allow, false = deny)
+	 * @param string|callable $condition Condition
+	 *
+	 * @return mixed
+	 */
+	public function on($action, $component, $rule, $condition = null);
+
+	/**
+	 * Resolve custom capability
+	 *
+	 * @param string     $action    'create', 'read', 'update', 'delete'
+	 * @param string     $component Component name
+	 * @param ElggEntity $target    Entity
+	 * @param ElggUser   $actor     User
+	 * @param array      $params    Context parameters
+	 *
+	 * @return RuleInterface|null
+	 */
+	public function getCustomRule($action, $component, ElggEntity $target = null, ElggUser $actor = null, array $params = []);
 }

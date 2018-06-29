@@ -24,7 +24,7 @@ class SetReadPermissions {
 		}
 
 		$svc = elgg()->roles;
-		/* @var $svc \hypeJunction\Capabilities\RolesService */
+		/* @var $svc \hypeJunction\Capabilities\Roles */
 
 		$container = $entity->getContainerEntity();
 

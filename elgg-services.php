@@ -1,5 +1,5 @@
 <?php
 
 return [
-	'roles' => \DI\object(\hypeJunction\Capabilities\RolesService::class),
+	'roles' => \DI\object(\hypeJunction\Capabilities\Roles::class),
 ];

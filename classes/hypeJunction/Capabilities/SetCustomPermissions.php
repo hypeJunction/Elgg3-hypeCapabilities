@@ -5,10 +5,10 @@ namespace hypeJunction\Capabilities;
 use DatabaseException;
 use Elgg\Hook;
 
-class SetCreatePermissions {
+class SetCustomPermissions {
 
 	/**
-	 * Implement role based entity access
+	 * Implement custom capability permission
 	 *
 	 * @param Hook $hook Hook
 	 *
@@ -16,24 +16,23 @@ class SetCreatePermissions {
 	 * @throws DatabaseException
 	 */
 	public function __invoke(Hook $hook) {
-
-		$container = $hook->getParam('container');
 		$user = $hook->getParam('user');
+		$container = $hook->getParam('container');
+		$entity = $hook->getParam('entity');
+		$action = $hook->getParam('action');
+		$component = $hook->getParam('component');
 
-		if (!$container || !$user) {
+		if (!$user) {
 			return null;
 		}
 
-		$svc = elgg()->roles;
-		/* @var $svc \hypeJunction\Capabilities\Roles */
+		$svc = Roles::instance();
 
 		$roles = $svc->getRolesForPermissionsCheck($user, $container);
+		/* @var $roles \hypeJunction\Capabilities\Role[] */
 
 		foreach ($roles as $role) {
-			$params = $hook->getParams();
-			$params['type'] = $hook->getType();
-
-			$rule = $role->getEntityRule(Role::CREATE, $container, $user, $params);
+			$rule = $role->getCustomRule($action, $component, $entity, $user, $hook->getParams());
 			if ($rule) {
 				return $rule->grants($hook->getValue());
 			}

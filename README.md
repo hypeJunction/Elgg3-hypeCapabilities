@@ -7,7 +7,7 @@ Capabilities and roles API
 ## Registering a role
 
 ```php
-elgg()->roles->register('role_name');
+\hypeJunction->register('role_name');
 ```
 
 ## Assigning a role to a user
@@ -124,4 +124,22 @@ elgg()->roles->guest->onRouteAccess('collection:user:user:online', Role::DENY);
 elgg()->roles->guest->onRouteAccess('collection:user:user:popular', Role::DENY);
 elgg()->roles->guest->onRouteAccess('search:user:user', Role::DENY);
 elgg()->roles->guest->onRouteAccess('view:user', Role::DENY);
+```
+
+
+### Custom (component) capabilities
+
+You can check and alter custom capabilities:
+
+```php
+// Check a custom role
+elgg()->roles->can('read', 'discussions');
+
+// Define how role responds to capability check
+elgg()->roles->guest->on('read', 'discussions', Role::DENY);
+
+// Override role response
+elgg_register_plugin_hook_handler('capability', 'read:discussions', function(Hook $hook) {
+
+});
 ```

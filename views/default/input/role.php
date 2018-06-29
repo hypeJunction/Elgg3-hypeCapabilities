@@ -1,7 +1,7 @@
 <?php
 
 $svc = elgg()->roles;
-/* @var $svc \hypeJunction\Capabilities\RolesService */
+/* @var $svc \hypeJunction\Capabilities\Roles */
 
 $roles = $svc->all(true);
 

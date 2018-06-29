@@ -4,6 +4,7 @@ namespace hypeJunction\Capabilities;
 
 use DatabaseException;
 use Elgg\Database\Select;
+use Elgg\Di\ServiceFacade;
 use ElggEntity;
 use ElggUser;
 
@@ -12,7 +13,9 @@ use ElggUser;
  * @property-read Role $admin
  * @property-read Role $guest
  */
-class RolesService {
+class Roles {
+
+	use ServiceFacade;
 
 	/**
 	 * @var array
@@ -31,6 +34,13 @@ class RolesService {
 		foreach ($this->defaults as $role) {
 			$this->roles[$role] = new Role($role);
 		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function name() {
+		return 'roles';
 	}
 
 	/**
@@ -283,6 +293,46 @@ class RolesService {
 		});
 
 		return $roles;
+	}
+
+	/**
+	 * Check if user can perform an action on a component
+	 * Corresponds to capability configured using RoleInterface::on();
+	 *
+	 * @param string     $action    Action name
+	 * @param string     $component Component name
+	 * @param ElggEntity $container Target group
+	 * @param Context    $context   Context definition
+	 * @param bool       $default   Default permission
+	 *
+	 * @return bool
+	 */
+	public static function can($action, $component, $container = null, Context $context = null, $default = true) {
+
+		if ($context) {
+			$params = $context->getParams();
+			$user = $context->getActor();
+			$entity = $context->getTarget();
+			if ($entity && !isset($container)) {
+				$container = $entity->getContainerEntity();
+			}
+		} else {
+			$params = [];
+			$entity = null;
+		}
+
+		if (!isset($user)) {
+			$user = elgg_get_logged_in_user_entity();
+		}
+
+
+		$params['user'] = $user;
+		$params['container'] = $container;
+		$params['entity'] = $entity;
+		$params['action'] = $action;
+		$params['component'] = $component;
+
+		return elgg_trigger_plugin_hook('capability', "$action:$component", $params, $default);
 	}
 
 }

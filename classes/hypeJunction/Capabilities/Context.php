@@ -27,8 +27,8 @@ class Context implements ContextInterface {
 	 * Constructor
 	 *
 	 * @param ElggEntity|null $target Target
-	 * @param ElggUser|null $actor  Actor
-	 * @param array         $params Additional params
+	 * @param ElggUser|null   $actor  Actor
+	 * @param array           $params Additional params
 	 */
 	public function __construct(ElggEntity $target = null, ElggUser $actor = null, array $params = []) {
 		$this->target = $target;

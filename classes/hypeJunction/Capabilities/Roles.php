@@ -4,7 +4,7 @@ namespace hypeJunction\Capabilities;
 
 use DatabaseException;
 use Elgg\Database\Select;
-use Elgg\Di\ServiceFacade;
+use Elgg\Traits\Di\ServiceFacade;
 use ElggEntity;
 use ElggUser;
 

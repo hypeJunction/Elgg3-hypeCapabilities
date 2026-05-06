@@ -6,6 +6,9 @@ use DatabaseException;
 use Elgg\EntityPermissionsException;
 use Elgg\Request;
 
+/**
+ * RouteAccessMiddleware class.
+ */
 class RouteAccessMiddleware {
 
 	/**
@@ -21,8 +24,8 @@ class RouteAccessMiddleware {
 
 		$params = $request->getParams();
 
-		$container = elgg_get_page_owner_entity() ? : null;
-		$user = $request->elgg()->session->getLoggedInUser() ? : null;
+		$container = elgg_get_page_owner_entity() ?: null;
+		$user = $request->elgg()->session->getLoggedInUser() ?: null;
 
 		$svc = elgg()->roles;
 		/* @var $svc \hypeJunction\Capabilities\Roles */

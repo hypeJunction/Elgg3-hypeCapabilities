@@ -119,6 +119,7 @@ class Roles {
 			foreach ($extends as $extend) {
 				$role->addExtend($extend);
 			}
+
 			$role->setPriority($priority);
 		} else {
 			$this->roles[$role] = new Role($role, $extends, $priority);
@@ -334,5 +335,4 @@ class Roles {
 
 		return elgg_trigger_plugin_hook('capability', "$action:$component", $params, $default);
 	}
-
 }

@@ -4,6 +4,9 @@ namespace hypeJunction\Capabilities;
 
 use Elgg\Hook;
 
+/**
+ * SetEditPermissions class.
+ */
 class SetEditPermissions {
 
 	/**

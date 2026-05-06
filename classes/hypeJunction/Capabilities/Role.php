@@ -5,6 +5,9 @@ namespace hypeJunction\Capabilities;
 use ElggEntity;
 use ElggUser;
 
+/**
+ * Role class.
+ */
 final class Role implements RoleInterface {
 
 	const CREATE = 'create';
@@ -201,7 +204,7 @@ final class Role implements RoleInterface {
 
 		$capabilities = $this->getCapabilities();
 
-		if ($action == Role::CREATE) {
+		if ($action == self::CREATE) {
 			$type = elgg_extract('type', $params);
 			$subtype = elgg_extract('subtype', $params);
 		} else {

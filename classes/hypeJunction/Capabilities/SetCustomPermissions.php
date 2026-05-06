@@ -5,6 +5,9 @@ namespace hypeJunction\Capabilities;
 use DatabaseException;
 use Elgg\Hook;
 
+/**
+ * SetCustomPermissions class.
+ */
 class SetCustomPermissions {
 
 	/**

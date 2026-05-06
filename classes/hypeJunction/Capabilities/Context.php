@@ -6,6 +6,9 @@ use ElggData;
 use ElggEntity;
 use ElggUser;
 
+/**
+ * Context class.
+ */
 class Context implements ContextInterface {
 
 	/**
@@ -35,6 +38,7 @@ class Context implements ContextInterface {
 		if (!isset($actor) && elgg_is_logged_in()) {
 			$actor = elgg_get_logged_in_user_entity();
 		}
+
 		$this->actor = $actor;
 		$this->params = $params;
 	}

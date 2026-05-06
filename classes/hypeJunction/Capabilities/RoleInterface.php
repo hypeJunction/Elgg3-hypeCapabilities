@@ -5,6 +5,9 @@ namespace hypeJunction\Capabilities;
 use ElggEntity;
 use ElggUser;
 
+/**
+ * RoleInterface interface.
+ */
 interface RoleInterface {
 
 	/**

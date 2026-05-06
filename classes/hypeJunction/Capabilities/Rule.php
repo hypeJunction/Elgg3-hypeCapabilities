@@ -2,6 +2,9 @@
 
 namespace hypeJunction\Capabilities;
 
+/**
+ * Rule class.
+ */
 class Rule implements RuleInterface {
 
 	/**
@@ -42,17 +45,16 @@ class Rule implements RuleInterface {
 	 */
 	public function grants($current = null) {
 		switch ($this->condition) {
-			case Role::STACK :
+			case Role::STACK:
 				if ($this->grant == Role::ALLOW) {
 					if (!isset($current) || $current === true) {
 						// Only allow if other permissions are met
 						return true;
 					}
 				}
-
 				return false;
 
-			case Role::OVERRIDE :
+			case Role::OVERRIDE:
 				return $this->grant;
 		}
 
@@ -62,6 +64,5 @@ class Rule implements RuleInterface {
 		}
 
 		return $current;
- 	}
-
+	}
 }

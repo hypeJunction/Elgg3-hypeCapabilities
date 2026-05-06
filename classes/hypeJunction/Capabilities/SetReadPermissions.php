@@ -4,6 +4,9 @@ namespace hypeJunction\Capabilities;
 
 use Elgg\Hook;
 
+/**
+ * SetReadPermissions class.
+ */
 class SetReadPermissions {
 
 	/**

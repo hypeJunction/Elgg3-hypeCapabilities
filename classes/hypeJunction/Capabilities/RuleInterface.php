@@ -2,6 +2,9 @@
 
 namespace hypeJunction\Capabilities;
 
+/**
+ * RuleInterface interface.
+ */
 interface RuleInterface {
 
 	/**
@@ -21,5 +24,4 @@ interface RuleInterface {
 	 * @return bool
 	 */
 	public function grants($current = null);
-
 }

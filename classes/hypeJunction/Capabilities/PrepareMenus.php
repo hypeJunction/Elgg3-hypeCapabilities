@@ -4,6 +4,9 @@ namespace hypeJunction\Capabilities;
 
 use Elgg\Hook;
 
+/**
+ * PrepareMenus class.
+ */
 class PrepareMenus {
 
 	/**
@@ -46,7 +49,7 @@ class PrepareMenus {
 
 					$route = elgg_extract('_route', $params);
 
-					$container = $this->resolveTarget($route, $params) ? : null;
+					$container = $this->resolveTarget($route, $params) ?: null;
 
 					$svc = elgg()->roles;
 					/* @var $svc \hypeJunction\Capabilities\Roles */
@@ -63,14 +66,12 @@ class PrepareMenus {
 						}
 					}
 				} catch (\Exception $ex) {
-
+					// best-effort filter — if a rule cannot be evaluated, leave the menu item as-is
 				}
 			}
 
 			return $sections;
 		}
-
-
 	}
 
 	/**
@@ -94,8 +95,8 @@ class PrepareMenus {
 		};
 
 		switch ($route_parts[0]) {
-			case 'view' :
-			case 'edit' :
+			case 'view':
+			case 'edit':
 				$username = elgg_extract('username', $params);
 				if ($username) {
 					return get_user_by_username($username);
@@ -107,8 +108,8 @@ class PrepareMenus {
 				}
 				break;
 
-			case 'add' :
-			case 'collection' :
+			case 'add':
+			case 'collection':
 				$username = elgg_extract('username', $params);
 				if ($username) {
 					return get_user_by_username($username);

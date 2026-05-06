@@ -2,6 +2,9 @@
 
 namespace hypeJunction\Capabilities;
 
+/**
+ * ContextInterface interface.
+ */
 interface ContextInterface {
 
 	/**

@@ -27,6 +27,10 @@ if (function_exists('_elgg_services')) {
         if (!$plugin->isActive()) {
             try { $plugin->activate(); } catch (\Throwable $e) {}
         }
+        // Re-register plugin views and flush the view location cache so that
+        // views installed after bootCore() (e.g. input/role) are resolvable.
+        _elgg_services()->views->registerPluginViews($plugin->getPath());
+        _elgg_services()->views->cacheConfiguration(_elgg_services()->serverCache);
         try { elgg_trigger_event('init', 'system'); } catch (\Throwable $e) {}
     }
 }

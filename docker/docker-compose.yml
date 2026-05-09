@@ -1,4 +1,4 @@
-# Per-plugin test stack for Elgg 4.x.
+# Per-plugin test stack for Elgg 6.x.
 #
 # This file lives at <plugin>/docker/docker-compose.yml inside the plugin
 # repository. Each plugin gets its own copy, with its own volumes and
@@ -15,7 +15,7 @@
 #   docker compose -f docker/docker-compose.yml --profile test run --rm node \
 #     sh -c "cd /plugin/tests/playwright && npm ci && npx playwright test"
 
-name: ${PLUGIN_ID:?set PLUGIN_ID in docker/.env}-elgg4
+name: ${PLUGIN_ID:?set PLUGIN_ID in docker/.env}-elgg6
 
 services:
   elgg:
@@ -33,20 +33,27 @@ services:
       ELGG_DB_NAME: elgg
       ELGG_DB_USER: elgg
       ELGG_DB_PASS: elgg
-      ELGG_SITE_URL: "http://localhost:${ELGG_PORT:-8480}/"
+      ELGG_SITE_URL: "http://elgg/"
       ELGG_DATA_ROOT: "/var/www/data/"
       ELGG_DB_PREFIX: "elgg_"
       ELGG_ADMIN_EMAIL: "admin@example.com"
       ELGG_ADMIN_PASSWORD: "admin12345"
     ports:
-      - "${ELGG_PORT:-8480}:80"
+      - "${ELGG_PORT:-9610}:80"
     depends_on:
       db:
         condition: service_healthy
     entrypoint: /usr/local/bin/elgg-install.sh
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /var/www/html/.elgg-installed && curl -sf -H 'Host: elgg' http://localhost/ > /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 90s
 
   db:
-    image: mysql:5.7
+    image: mysql:8.0
+    command: --innodb-use-native-aio=0
     environment:
       MYSQL_DATABASE: elgg
       MYSQL_USER: elgg
@@ -60,14 +67,14 @@ services:
     volumes:
       - db-data:/var/lib/mysql
     ports:
-      - "${DB_PORT:-3304}:3306"
+      - "${DB_PORT:-10610}:3306"
 
   # Node.js + Playwright, activated via --profile test so it does not
   # start with `docker compose up`. Mounts only this plugin's source at
   # /plugin so a destructive in-container command cannot touch anything
   # outside this repo.
   node:
-    image: mcr.microsoft.com/playwright:v1.49.0-noble
+    image: mcr.microsoft.com/playwright:v1.59.1-noble
     volumes:
       - ..:/plugin
     working_dir: /plugin
@@ -81,7 +88,8 @@ services:
       ELGG_DB_PASS: elgg
       ELGG_DB_NAME: elgg
     depends_on:
-      - elgg
+      elgg:
+        condition: service_healthy
     profiles:
       - test
 

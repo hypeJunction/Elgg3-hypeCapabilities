@@ -3,7 +3,7 @@
 namespace hypeJunction\Capabilities;
 
 use DatabaseException;
-use Elgg\Hook;
+use Elgg\Event;
 
 /**
  * SetAdministerPermissions class.
@@ -13,15 +13,15 @@ class SetAdministerPermissions {
 	/**
 	 * Implement role based entity access
 	 *
-	 * @param Hook $hook Hook
+	 * @param Event $event Event
 	 *
 	 * @return bool|null
 	 * @throws DatabaseException
 	 */
-	public function __invoke(Hook $hook) {
+	public function __invoke(Event $event) {
 
-		$entity = $hook->getEntityParam();
-		$user = $hook->getParam('user');
+		$entity = $event->getEntityParam();
+		$user = $event->getParam('user');
 
 		if (!$entity || !$user) {
 			return null;
@@ -40,9 +40,9 @@ class SetAdministerPermissions {
 		/* @var $roles \hypeJunction\Capabilities\Role[] */
 
 		foreach ($roles as $role) {
-			$rule = $role->getEntityRule(Role::ADMINISTER, $entity, $user, $hook->getParams());
+			$rule = $role->getEntityRule(Role::ADMINISTER, $entity, $user, $event->getParams());
 			if ($rule) {
-				return $rule->grants($hook->getValue());
+				return $rule->grants($event->getValue());
 			}
 		}
 	}

@@ -333,6 +333,6 @@ class Roles {
 		$params['action'] = $action;
 		$params['component'] = $component;
 
-		return elgg_trigger_plugin_hook('capability', "$action:$component", $params, $default);
+		return elgg_trigger_event_results('capability', "$action:$component", $params, $default);
 	}
 }

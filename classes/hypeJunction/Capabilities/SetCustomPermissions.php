@@ -3,7 +3,7 @@
 namespace hypeJunction\Capabilities;
 
 use DatabaseException;
-use Elgg\Hook;
+use Elgg\Event;
 
 /**
  * SetCustomPermissions class.
@@ -13,17 +13,17 @@ class SetCustomPermissions {
 	/**
 	 * Implement custom capability permission
 	 *
-	 * @param Hook $hook Hook
+	 * @param Event $event Event
 	 *
 	 * @return bool|null
 	 * @throws DatabaseException
 	 */
-	public function __invoke(Hook $hook) {
-		$user = $hook->getParam('user');
-		$container = $hook->getParam('container');
-		$entity = $hook->getParam('entity');
-		$action = $hook->getParam('action');
-		$component = $hook->getParam('component');
+	public function __invoke(Event $event) {
+		$user = $event->getParam('user');
+		$container = $event->getParam('container');
+		$entity = $event->getParam('entity');
+		$action = $event->getParam('action');
+		$component = $event->getParam('component');
 
 		if (!$user) {
 			return null;
@@ -35,9 +35,9 @@ class SetCustomPermissions {
 		/* @var $roles \hypeJunction\Capabilities\Role[] */
 
 		foreach ($roles as $role) {
-			$rule = $role->getCustomRule($action, $component, $entity, $user, $hook->getParams());
+			$rule = $role->getCustomRule($action, $component, $entity, $user, $event->getParams());
 			if ($rule) {
-				return $rule->grants($hook->getValue());
+				return $rule->grants($event->getValue());
 			}
 		}
 	}

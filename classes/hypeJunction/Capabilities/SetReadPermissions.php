@@ -2,7 +2,7 @@
 
 namespace hypeJunction\Capabilities;
 
-use Elgg\Hook;
+use Elgg\Event;
 
 /**
  * SetReadPermissions class.
@@ -12,15 +12,15 @@ class SetReadPermissions {
 	/**
 	 * Implement role based entity access
 	 *
-	 * @param Hook $hook Hook
+	 * @param Event $event Event
 	 *
 	 * @return bool|null
 	 * @throws \DatabaseException
 	 */
-	public function __invoke(Hook $hook) {
+	public function __invoke(Event $event) {
 
-		$entity = $hook->getEntityParam();
-		$user = $hook->getParam('user');
+		$entity = $event->getEntityParam();
+		$user = $event->getParam('user');
 
 		if (!$entity || !$user) {
 			return null;
@@ -34,9 +34,9 @@ class SetReadPermissions {
 		$roles = $svc->getRolesForPermissionsCheck($user, $container);
 
 		foreach ($roles as $role) {
-			$rule = $role->getEntityRule(Role::READ, $entity, $user, $hook->getParams());
+			$rule = $role->getEntityRule(Role::READ, $entity, $user, $event->getParams());
 			if ($rule) {
-				return $rule->grants($hook->getValue());
+				return $rule->grants($event->getValue());
 			}
 		}
 	}

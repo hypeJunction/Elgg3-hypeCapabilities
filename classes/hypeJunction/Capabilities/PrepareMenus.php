@@ -2,7 +2,7 @@
 
 namespace hypeJunction\Capabilities;
 
-use Elgg\Hook;
+use Elgg\Event;
 
 /**
  * PrepareMenus class.
@@ -12,15 +12,15 @@ class PrepareMenus {
 	/**
 	 * Remove menu items user can't access
 	 *
-	 * @param Hook $hook Hook
+	 * @param Event $event Event
 	 *
 	 * @return array|null
 	 */
-	public function __invoke(Hook $hook) {
+	public function __invoke(Event $event) {
 
-		$sections = $hook->getValue();
+		$sections = $event->getValue();
 
-		$hook_type = explode(':', $hook->getType());
+		$hook_type = explode(':', $event->getType());
 
 		if ($hook_type[0] !== 'menu') {
 			return null;

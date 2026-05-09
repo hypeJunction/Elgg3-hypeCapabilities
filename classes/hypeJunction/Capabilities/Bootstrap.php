@@ -42,13 +42,13 @@ class Bootstrap extends PluginBootstrap {
 	 */
 	public function init() {
 
-		elgg_register_plugin_hook_handler('gatekeeper', 'all', SetReadPermissions::class);
-		elgg_register_plugin_hook_handler('permissions_check', 'all', SetEditPermissions::class);
-		elgg_register_plugin_hook_handler('permissions_check:delete', 'all', SetDeletePermissions::class);
-		elgg_register_plugin_hook_handler('permissions_check:administer', 'all', SetAdministerPermissions::class);
-		elgg_register_plugin_hook_handler('container_permissions_check', 'all', SetCreatePermissions::class);
-		elgg_register_plugin_hook_handler('capability', 'all', SetCustomPermissions::class);
-		elgg_register_plugin_hook_handler('prepare', 'all', PrepareMenus::class);
+		elgg_register_event_handler('gatekeeper', 'all', SetReadPermissions::class);
+		elgg_register_event_handler('permissions_check', 'all', SetEditPermissions::class);
+		elgg_register_event_handler('permissions_check:delete', 'all', SetDeletePermissions::class);
+		elgg_register_event_handler('permissions_check:administer', 'all', SetAdministerPermissions::class);
+		elgg_register_event_handler('container_permissions_check', 'all', SetCreatePermissions::class);
+		elgg_register_event_handler('capability', 'all', SetCustomPermissions::class);
+		elgg_register_event_handler('prepare', 'all', PrepareMenus::class);
 	}
 
 	/**

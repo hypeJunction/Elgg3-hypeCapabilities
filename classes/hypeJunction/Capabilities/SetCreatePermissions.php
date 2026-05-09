@@ -3,7 +3,7 @@
 namespace hypeJunction\Capabilities;
 
 use DatabaseException;
-use Elgg\Hook;
+use Elgg\Event;
 
 /**
  * SetCreatePermissions class.
@@ -13,15 +13,15 @@ class SetCreatePermissions {
 	/**
 	 * Implement role based entity access
 	 *
-	 * @param Hook $hook Hook
+	 * @param Event $event Event
 	 *
 	 * @return bool|null
 	 * @throws DatabaseException
 	 */
-	public function __invoke(Hook $hook) {
+	public function __invoke(Event $event) {
 
-		$container = $hook->getParam('container');
-		$user = $hook->getParam('user');
+		$container = $event->getParam('container');
+		$user = $event->getParam('user');
 
 		if (!$container || !$user) {
 			return null;
@@ -33,12 +33,12 @@ class SetCreatePermissions {
 		$roles = $svc->getRolesForPermissionsCheck($user, $container);
 
 		foreach ($roles as $role) {
-			$params = $hook->getParams();
-			$params['type'] = $hook->getType();
+			$params = $event->getParams();
+			$params['type'] = $event->getType();
 
 			$rule = $role->getEntityRule(Role::CREATE, $container, $user, $params);
 			if ($rule) {
-				return $rule->grants($hook->getValue());
+				return $rule->grants($event->getValue());
 			}
 		}
 	}

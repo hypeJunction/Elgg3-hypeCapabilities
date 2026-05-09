@@ -1,8 +1,8 @@
 hypeCapabilities
 ================
+![Elgg 4.x](https://img.shields.io/badge/Elgg-4.x-orange.svg?style=flat-square)
 
 Capabilities and roles API
-
 
 ## Registering a role
 
@@ -96,7 +96,6 @@ elgg()->roles->teacher->canAdminister('object', 'blog', Role::ALLOW, function(\h
 });
 ```
 
-
 ### Routes
 
 You can allow/deny access to certain routes by route name
@@ -125,7 +124,6 @@ elgg()->roles->guest->onRouteAccess('collection:user:user:popular', Role::DENY);
 elgg()->roles->guest->onRouteAccess('search:user:user', Role::DENY);
 elgg()->roles->guest->onRouteAccess('view:user', Role::DENY);
 ```
-
 
 ### Custom (component) capabilities
 

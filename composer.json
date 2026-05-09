@@ -3,7 +3,7 @@
 	"type": "elgg-plugin",
 	"version": "4.0.0",
 	"description": "Roles and capabilities API",
-	"homepage": "http://hypejunction.com",
+	"homepage": "https://github.com/hypeJunction/Elgg3-hypeCapabilities",
 	"keywords": [
 		"elgg",
 		"plugin",
@@ -14,7 +14,7 @@
 	"authors": [
 		{
 			"name": "Ismayil Khayredinov",
-			"email": "info@hypejunction.com"
+			"email": "ismayil.khayredinov@gmail.com"
 		}
 	],
 	"extra": {

@@ -1,7 +1,7 @@
 {
 	"name": "hypeCapabilities",
 	"version": "1.2.0",
-	"license": "SEE LICENSE IN https://hypejunction.com/license",
+	"license": "SEE LICENSE IN https://github.com/hypeJunction/Elgg3-hypeCapabilities",
 	"repository": {
 		"type": "git",
 		"url": "git@github.com:hypeJunctionPro/Elgg3-hypeCapabilities.git",

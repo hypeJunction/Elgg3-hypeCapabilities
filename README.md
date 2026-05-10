@@ -1,6 +1,6 @@
 hypeCapabilities
 ================
-![Elgg 4.x](https://img.shields.io/badge/Elgg-4.x-orange.svg?style=flat-square)
+![Elgg 7.x](https://img.shields.io/badge/Elgg-7.x-orange.svg?style=flat-square)
 
 Capabilities and roles API
 
@@ -141,3 +141,9 @@ elgg_register_plugin_hook_handler('capability', 'read:discussions', function(Hoo
 
 });
 ```
+
+## Compatibility
+
+| Plugin version | Elgg version |
+|---|---|
+| current | 7.x |

@@ -1,7 +1,6 @@
 {
     "name": "hypejunction/hypecapabilities",
     "type": "elgg-plugin",
-    "version": "7.0.0",
     "description": "Roles and capabilities API",
     "homepage": "https://github.com/hypeJunction/Elgg3-hypeCapabilities",
     "keywords": [

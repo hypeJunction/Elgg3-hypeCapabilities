@@ -15,7 +15,10 @@ use Elgg\IntegrationTestCase;
  */
 class BootstrapTest extends IntegrationTestCase {
 
-	public function getPluginID(): string {
+	/**
+     * @return string
+     */
+    public function getPluginID(): string {
 		return 'hypecapabilities';
 	}
 

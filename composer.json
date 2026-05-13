@@ -1,41 +1,41 @@
 {
-	"name": "hypejunction/hypecapabilities",
-	"type": "elgg-plugin",
-	"version": "4.0.0",
-	"description": "Roles and capabilities API",
-	"homepage": "https://github.com/hypeJunction/Elgg3-hypeCapabilities",
-	"keywords": [
-		"elgg",
-		"plugin",
-		"capabilities",
-		"roles"
-	],
-	"license": "GPL-2.0-or-later",
-	"authors": [
-		{
-			"name": "Ismayil Khayredinov",
-			"email": "ismayil.khayredinov@gmail.com"
-		}
-	],
-	"extra": {
-		"installer-name": "hypeCapabilities",
-		"elgg-plugin": {
-			"id": "hypecapabilities"
-		}
-	},
-	"require": {
-		"composer/installers": "^2.0",
-		"php": ">=8.0",
-		"elgg/elgg": "~5.0.0"
-	},
-	"autoload": {
-		"psr-0": {
-			"": "classes/"
-		}
-	},
-	"config": {
-		"allow-plugins": {
-			"composer/installers": true
-		}
-	}
+    "name": "hypejunction/hypecapabilities",
+    "type": "elgg-plugin",
+    "version": "5.0.0",
+    "description": "Roles and capabilities API",
+    "homepage": "https://github.com/hypeJunction/Elgg3-hypeCapabilities",
+    "keywords": [
+        "elgg",
+        "plugin",
+        "capabilities",
+        "roles"
+    ],
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Ismayil Khayredinov",
+            "email": "ismayil.khayredinov@gmail.com"
+        }
+    ],
+    "extra": {
+        "installer-name": "hypeCapabilities",
+        "elgg-plugin": {
+            "id": "hypecapabilities"
+        }
+    },
+    "require": {
+        "composer/installers": "^2.0",
+        "php": ">=8.0",
+        "elgg/elgg": "~5.0.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "": "classes/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    }
 }

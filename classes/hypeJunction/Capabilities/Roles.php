@@ -36,6 +36,11 @@ class Roles {
 		}
 	}
 
+	/**
+	 * Service name
+	 *
+	 * @return string
+	 */
 	public static function name(): string {
 		return 'roles';
 	}

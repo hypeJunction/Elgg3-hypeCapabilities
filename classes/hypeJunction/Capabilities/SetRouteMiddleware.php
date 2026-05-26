@@ -19,7 +19,7 @@ class SetRouteMiddleware {
 
 		$config = $hook->getValue();
 
-		$middleware = (array) elgg_extract('middleware', $config);
+		$middleware = (array) \elgg_extract('middleware', $config);
 
 		array_unshift($middleware, RouteAccessMiddleware::class);
 

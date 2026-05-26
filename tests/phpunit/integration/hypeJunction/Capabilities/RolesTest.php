@@ -276,12 +276,12 @@ class RolesTest extends IntegrationTestCase {
 
 	public function testCanDefaultsToTrueWithNoRuleConfigured(): void {
 		$user = $this->createUser();
-		elgg_get_session()->setLoggedInUser($user);
+		\elgg_get_session()->setLoggedInUser($user);
 		try {
 			$result = Roles::can('view', 'widget_' . uniqid(), null, null, true);
 			$this->assertTrue($result);
 		} finally {
-			elgg_get_session()->removeLoggedInUser();
+			\elgg_get_session()->removeLoggedInUser();
 		}
 	}
 
@@ -295,13 +295,13 @@ class RolesTest extends IntegrationTestCase {
 
 		$user = $this->createUser();
 		$this->roles->assign($roleName, $user);
-		elgg_get_session()->setLoggedInUser($user);
+		\elgg_get_session()->setLoggedInUser($user);
 
 		try {
 			$result = Roles::can('view', $component, null, null, true);
 			$this->assertFalse($result);
 		} finally {
-			elgg_get_session()->removeLoggedInUser();
+			\elgg_get_session()->removeLoggedInUser();
 		}
 	}
 
@@ -315,13 +315,13 @@ class RolesTest extends IntegrationTestCase {
 
 		$user = $this->createUser();
 		$this->roles->assign($roleName, $user);
-		elgg_get_session()->setLoggedInUser($user);
+		\elgg_get_session()->setLoggedInUser($user);
 
 		try {
 			$result = Roles::can('view', $component, null, null, false);
 			$this->assertTrue($result);
 		} finally {
-			elgg_get_session()->removeLoggedInUser();
+			\elgg_get_session()->removeLoggedInUser();
 		}
 	}
 }

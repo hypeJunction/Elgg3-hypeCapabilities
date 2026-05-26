@@ -66,7 +66,7 @@ class Roles {
 	 * @return Role|null
 	 */
 	public function getRoleByName($name) {
-		return elgg_extract($name, $this->roles);
+		return \elgg_extract($name, $this->roles);
 	}
 
 	/**
@@ -157,7 +157,7 @@ class Roles {
 		}
 
 		if (!isset($target)) {
-			$target = elgg_get_site_entity();
+			$target = \elgg_get_site_entity();
 		}
 
 		add_entity_relationship($user->guid, "has_role:{$role->getRole()}", $target->guid);
@@ -174,7 +174,7 @@ class Roles {
 	 */
 	public function unassign($role, ElggUser $user, ElggEntity $target = null) {
 		if (!isset($target)) {
-			$target = elgg_get_site_entity();
+			$target = \elgg_get_site_entity();
 		}
 
 		remove_entity_relationship($user->guid, "has_role:{$role}", $target->guid);
@@ -211,11 +211,11 @@ class Roles {
 	 */
 	public function getRoles(ElggUser $user = null, ElggEntity $target = null) {
 		if (!isset($user)) {
-			$user = elgg_get_logged_in_user_entity();
+			$user = \elgg_get_logged_in_user_entity();
 		}
 
 		if (!isset($target)) {
-			$target = elgg_get_site_entity();
+			$target = \elgg_get_site_entity();
 		}
 
 		$roles = [];
@@ -266,8 +266,8 @@ class Roles {
 	 */
 	public function getRolesForPermissionsCheck(ElggUser $user = null, $target = null) {
 
-		if (!isset($user) && elgg_is_logged_in()) {
-			$user = elgg_get_logged_in_user_entity();
+		if (!isset($user) && \elgg_is_logged_in()) {
+			$user = \elgg_get_logged_in_user_entity();
 		}
 
 		if ($target instanceof ElggEntity) {
@@ -323,7 +323,7 @@ class Roles {
 		}
 
 		if (!isset($user)) {
-			$user = elgg_get_logged_in_user_entity();
+			$user = \elgg_get_logged_in_user_entity();
 		}
 
 
@@ -333,6 +333,6 @@ class Roles {
 		$params['action'] = $action;
 		$params['component'] = $component;
 
-		return elgg_trigger_plugin_hook('capability', "$action:$component", $params, $default);
+		return \elgg_trigger_plugin_hook('capability', "$action:$component", $params, $default);
 	}
 }

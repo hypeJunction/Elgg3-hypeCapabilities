@@ -35,8 +35,8 @@ class Context implements ContextInterface {
 	 */
 	public function __construct(ElggEntity $target = null, ElggUser $actor = null, array $params = []) {
 		$this->target = $target;
-		if (!isset($actor) && elgg_is_logged_in()) {
-			$actor = elgg_get_logged_in_user_entity();
+		if (!isset($actor) && \elgg_is_logged_in()) {
+			$actor = \elgg_get_logged_in_user_entity();
 		}
 
 		$this->actor = $actor;
@@ -76,6 +76,6 @@ class Context implements ContextInterface {
 	 * @return mixed
 	 */
 	public function getParam($name, $default = null) {
-		return elgg_extract($name, $this->params, $default);
+		return \elgg_extract($name, $this->params, $default);
 	}
 }

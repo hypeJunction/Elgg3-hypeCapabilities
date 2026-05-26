@@ -288,7 +288,7 @@ class CapabilitiesTest extends IntegrationTestCase {
 	// -------------------------------------------------------------------------
 
 	public function testRoleInputViewRendersSelectElement(): void {
-		$out = elgg_view('input/role', ['name' => 'test_role']);
+		$out = \elgg_view('input/role', ['name' => 'test_role']);
 		$this->assertStringContainsString('<select', $out);
 	}
 
@@ -296,14 +296,14 @@ class CapabilitiesTest extends IntegrationTestCase {
 		$svc = elgg()->roles;
 		$svc->register('viewable_role');
 
-		$out = elgg_view('input/role', ['name' => 'test_role']);
+		$out = \elgg_view('input/role', ['name' => 'test_role']);
 		$this->assertStringContainsString('value="viewable_role"', $out);
 
 		$svc->unregister('viewable_role');
 	}
 
 	public function testRoleInputViewExcludesDefaultRoles(): void {
-		$out = elgg_view('input/role', ['name' => 'test_role']);
+		$out = \elgg_view('input/role', ['name' => 'test_role']);
 		// Default roles are not selectable and must not appear as options
 		$this->assertStringNotContainsString('value="user"', $out);
 		$this->assertStringNotContainsString('value="admin"', $out);

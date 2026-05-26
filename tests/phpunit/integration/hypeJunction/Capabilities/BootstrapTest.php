@@ -25,11 +25,11 @@ class BootstrapTest extends IntegrationTestCase {
 	// --- plugin lifecycle ---
 
 	public function testPluginIsRegistered() {
-		$this->assertInstanceOf(\ElggPlugin::class, elgg_get_plugin_from_id('hypecapabilities'));
+		$this->assertInstanceOf(\ElggPlugin::class, \elgg_get_plugin_from_id('hypecapabilities'));
 	}
 
 	public function testPluginIsActive() {
-		$this->assertTrue(elgg_get_plugin_from_id('hypecapabilities')->isActive());
+		$this->assertTrue(\elgg_get_plugin_from_id('hypecapabilities')->isActive());
 	}
 
 	// --- class + interface autoloading ---
@@ -108,41 +108,41 @@ class BootstrapTest extends IntegrationTestCase {
 	// --- Bootstrap::init hook wiring (7 handlers) ---
 
 	public function testGatekeeperHookWired() {
-		$handlers = _elgg_services()->hooks->getAllHandlers();
+		$handlers = \_elgg_services()->hooks->getAllHandlers();
 		$this->assertArrayHasKey('gatekeeper', $handlers);
 		$this->assertArrayHasKey('all', $handlers['gatekeeper']);
 	}
 
 	public function testPermissionsCheckHookWired() {
-		$handlers = _elgg_services()->hooks->getAllHandlers();
+		$handlers = \_elgg_services()->hooks->getAllHandlers();
 		$this->assertArrayHasKey('permissions_check', $handlers);
 		$this->assertArrayHasKey('all', $handlers['permissions_check']);
 	}
 
 	public function testPermissionsCheckDeleteHookWired() {
-		$handlers = _elgg_services()->hooks->getAllHandlers();
+		$handlers = \_elgg_services()->hooks->getAllHandlers();
 		$this->assertArrayHasKey('permissions_check:delete', $handlers);
 	}
 
 	public function testPermissionsCheckAdministerHookWired() {
-		$handlers = _elgg_services()->hooks->getAllHandlers();
+		$handlers = \_elgg_services()->hooks->getAllHandlers();
 		$this->assertArrayHasKey('permissions_check:administer', $handlers);
 	}
 
 	public function testContainerPermissionsCheckHookWired() {
-		$handlers = _elgg_services()->hooks->getAllHandlers();
+		$handlers = \_elgg_services()->hooks->getAllHandlers();
 		$this->assertArrayHasKey('container_permissions_check', $handlers);
 		$this->assertArrayHasKey('all', $handlers['container_permissions_check']);
 	}
 
 	public function testCapabilityHookWired() {
-		$handlers = _elgg_services()->hooks->getAllHandlers();
+		$handlers = \_elgg_services()->hooks->getAllHandlers();
 		$this->assertArrayHasKey('capability', $handlers);
 		$this->assertArrayHasKey('all', $handlers['capability']);
 	}
 
 	public function testPrepareMenuHookWired() {
-		$handlers = _elgg_services()->hooks->getAllHandlers();
+		$handlers = \_elgg_services()->hooks->getAllHandlers();
 		$this->assertArrayHasKey('prepare', $handlers);
 		$this->assertArrayHasKey('all', $handlers['prepare']);
 	}

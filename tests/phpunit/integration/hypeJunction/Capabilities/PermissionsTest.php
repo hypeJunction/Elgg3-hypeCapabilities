@@ -33,8 +33,8 @@ class PermissionsTest extends IntegrationTestCase {
 			$this->roles->unregister($name);
 		}
 		$this->registeredRoles = [];
-		if (elgg_is_logged_in()) {
-			elgg_get_session()->removeLoggedInUser();
+		if (\elgg_is_logged_in()) {
+			\elgg_get_session()->removeLoggedInUser();
 		}
 	}
 
@@ -332,7 +332,7 @@ class PermissionsTest extends IntegrationTestCase {
 		$this->roles->assign($roleName, $creator);
 
 		// container_permissions_check passes a container (could be site, group, user)
-		$container = elgg_get_site_entity();
+		$container = \elgg_get_site_entity();
 		$hook = $this->getMockBuilder(\Elgg\Hook::class)->getMock();
 		$hook->method('getParam')->willReturnCallback(function ($name) use ($creator, $container) {
 			if ($name === 'user') return $creator;
@@ -353,7 +353,7 @@ class PermissionsTest extends IntegrationTestCase {
 
 	public function testCustomPermissionDefaultTrueWhenNoRule(): void {
 		$user = $this->createUser();
-		elgg_get_session()->setLoggedInUser($user);
+		\elgg_get_session()->setLoggedInUser($user);
 
 		$component = 'widget_' . uniqid();
 		$result = Roles::can('view', $component, null, null, true);
@@ -369,7 +369,7 @@ class PermissionsTest extends IntegrationTestCase {
 
 		$user = $this->createUser();
 		$this->roles->assign($roleName, $user);
-		elgg_get_session()->setLoggedInUser($user);
+		\elgg_get_session()->setLoggedInUser($user);
 
 		$result = Roles::can('view', $component, null, null, true);
 		$this->assertFalse($result);
@@ -384,7 +384,7 @@ class PermissionsTest extends IntegrationTestCase {
 
 		$user = $this->createUser();
 		$this->roles->assign($roleName, $user);
-		elgg_get_session()->setLoggedInUser($user);
+		\elgg_get_session()->setLoggedInUser($user);
 
 		$result = Roles::can('view', $component, null, null, false);
 		$this->assertTrue($result);

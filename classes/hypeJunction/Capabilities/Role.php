@@ -69,7 +69,7 @@ final class Role implements RoleInterface {
 	 * {@inheritdoc}
 	 */
 	public function getLabel() {
-		return elgg_echo("roles:role:$this->role");
+		return \elgg_echo("roles:role:$this->role");
 	}
 
 	/**
@@ -198,15 +198,15 @@ final class Role implements RoleInterface {
 			return null;
 		}
 
-		if (!isset($actor) && elgg_is_logged_in()) {
-			$actor = elgg_get_logged_in_user_entity();
+		if (!isset($actor) && \elgg_is_logged_in()) {
+			$actor = \elgg_get_logged_in_user_entity();
 		}
 
 		$capabilities = $this->getCapabilities();
 
 		if ($action == self::CREATE) {
-			$type = elgg_extract('type', $params);
-			$subtype = elgg_extract('subtype', $params);
+			$type = \elgg_extract('type', $params);
+			$subtype = \elgg_extract('subtype', $params);
 		} else {
 			$type = $target->type;
 			$subtype = $target->subtype;

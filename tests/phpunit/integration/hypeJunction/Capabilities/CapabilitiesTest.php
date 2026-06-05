@@ -232,7 +232,7 @@ class CapabilitiesTest extends IntegrationTestCase {
 
 	public function testSetCreatePermissionsReturnsNullWhenContainerMissing(): void {
 		$user = $this->createUser();
-		$hook = $this->getMockBuilder(\Elgg\Hook::class)->getMock();
+		$hook = $this->getMockBuilder(\Elgg\Event::class)->getMock();
 		$hook->method('getParam')->willReturnCallback(function ($key) use ($user) {
 			return $key === 'user' ? $user : null;
 		});
@@ -246,7 +246,7 @@ class CapabilitiesTest extends IntegrationTestCase {
 
 	public function testSetCreatePermissionsReturnsNullWhenUserMissing(): void {
 		$container = $this->createObject(['subtype' => 'container']);
-		$hook = $this->getMockBuilder(\Elgg\Hook::class)->getMock();
+		$hook = $this->getMockBuilder(\Elgg\Event::class)->getMock();
 		$hook->method('getParam')->willReturnCallback(function ($key) use ($container) {
 			return $key === 'container' ? $container : null;
 		});
@@ -263,7 +263,7 @@ class CapabilitiesTest extends IntegrationTestCase {
 	// -------------------------------------------------------------------------
 
 	public function testSetRouteMiddlewarePrependsRouteAccessMiddleware(): void {
-		$hook = $this->getMockBuilder(\Elgg\Hook::class)->getMock();
+		$hook = $this->getMockBuilder(\Elgg\Event::class)->getMock();
 		$hook->method('getValue')->willReturn(['middleware' => ['SomeOtherMiddleware']]);
 
 		$handler = new SetRouteMiddleware();
@@ -274,7 +274,7 @@ class CapabilitiesTest extends IntegrationTestCase {
 	}
 
 	public function testSetRouteMiddlewareWorksWithNoExistingMiddleware(): void {
-		$hook = $this->getMockBuilder(\Elgg\Hook::class)->getMock();
+		$hook = $this->getMockBuilder(\Elgg\Event::class)->getMock();
 		$hook->method('getValue')->willReturn([]);
 
 		$handler = new SetRouteMiddleware();
@@ -314,8 +314,8 @@ class CapabilitiesTest extends IntegrationTestCase {
 	// Helpers
 	// -------------------------------------------------------------------------
 
-	private function mockHook(array $params = []): \Elgg\Hook {
-		$hook = $this->getMockBuilder(\Elgg\Hook::class)->getMock();
+	private function mockHook(array $params = []): \Elgg\Event {
+		$hook = $this->getMockBuilder(\Elgg\Event::class)->getMock();
 		$hook->method('getEntityParam')->willReturnCallback(function () use ($params) {
 			return $params['entity'] ?? null;
 		});

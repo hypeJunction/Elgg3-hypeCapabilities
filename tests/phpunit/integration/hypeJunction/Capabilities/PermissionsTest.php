@@ -8,7 +8,7 @@ use ElggObject;
 /**
  * Behavior tests for the seven permission hook handlers registered in Bootstrap::init().
  *
- * Each handler is called directly via __invoke() with a mocked \Elgg\Hook so we can
+ * Each handler is called directly via __invoke() with a mocked \Elgg\Event so we can
  * assert exactly what the handler returns without triggering unrelated handlers from
  * other active plugins.
  */
@@ -45,7 +45,7 @@ class PermissionsTest extends IntegrationTestCase {
 	}
 
 	/**
-	 * Build a minimal \Elgg\Hook mock.
+	 * Build a minimal \Elgg\Event mock.
 	 * Only stubs what the permission handlers actually read.
 	 */
 	private function makeHook(
@@ -53,8 +53,8 @@ class PermissionsTest extends IntegrationTestCase {
 		?\ElggUser $user,
 		$currentValue = null,
 		string $hookType = 'object'
-	): \Elgg\Hook {
-		$hook = $this->getMockBuilder(\Elgg\Hook::class)->getMock();
+	): \Elgg\Event {
+		$hook = $this->getMockBuilder(\Elgg\Event::class)->getMock();
 
 		$hook->method('getEntityParam')->willReturn($entity);
 		$hook->method('getParam')->willReturnCallback(function ($name) use ($entity, $user) {
@@ -306,7 +306,7 @@ class PermissionsTest extends IntegrationTestCase {
 
 	public function testCreateNullContainerReturnsNull(): void {
 		$user = $this->createUser();
-		$hook = $this->getMockBuilder(\Elgg\Hook::class)->getMock();
+		$hook = $this->getMockBuilder(\Elgg\Event::class)->getMock();
 		$hook->method('getParam')->willReturnCallback(function ($name) use ($user) {
 			if ($name === 'user') return $user;
 			if ($name === 'container') return null;
@@ -333,7 +333,7 @@ class PermissionsTest extends IntegrationTestCase {
 
 		// container_permissions_check passes a container (could be site, group, user)
 		$container = \elgg_get_site_entity();
-		$hook = $this->getMockBuilder(\Elgg\Hook::class)->getMock();
+		$hook = $this->getMockBuilder(\Elgg\Event::class)->getMock();
 		$hook->method('getParam')->willReturnCallback(function ($name) use ($creator, $container) {
 			if ($name === 'user') return $creator;
 			if ($name === 'container') return $container;

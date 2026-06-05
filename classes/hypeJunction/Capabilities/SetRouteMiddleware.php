@@ -2,7 +2,7 @@
 
 namespace hypeJunction\Capabilities;
 
-use Elgg\Hook;
+use Elgg\Event;
 
 /**
  * SetRouteMiddleware class.
@@ -12,10 +12,10 @@ class SetRouteMiddleware {
 	/**
 	 * Add role based route access middleware
 	 *
-	 * @param Hook $hook Hook
+	 * @param Event $hook Event
 	 * @return array
 	 */
-	public function __invoke(Hook $hook) {
+	public function __invoke(Event $hook) {
 
 		$config = $hook->getValue();
 

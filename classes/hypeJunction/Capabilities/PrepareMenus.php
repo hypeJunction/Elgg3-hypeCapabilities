@@ -99,7 +99,7 @@ class PrepareMenus {
 			case 'edit':
 				$username = elgg_extract('username', $params);
 				if ($username) {
-					return get_user_by_username($username);
+					return elgg_get_user_by_username($username);
 				}
 
 				$guid = elgg_extract('guid', $params);
@@ -112,7 +112,7 @@ class PrepareMenus {
 			case 'collection':
 				$username = elgg_extract('username', $params);
 				if ($username) {
-					return get_user_by_username($username);
+					return elgg_get_user_by_username($username);
 				}
 
 				$guid = elgg_extract('guid', $params);
